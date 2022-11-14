@@ -1,6 +1,7 @@
 #!/usr/bin/with-contenv sh
 
 set -u # Treat unset variables as an error.
+export HOME=/config
 
 trap "exit" TERM QUIT INT
 trap "kill_im" EXIT
@@ -45,7 +46,7 @@ do
     if is_im_running; then
         IM_NOT_RUNNING=0
     else
-        IM_NOT_RUNNING="$(expr $JD_NOT_RUNNING + 1)"
+        IM_NOT_RUNNING="$(expr $IM_NOT_RUNNING + 1)"
     fi
     sleep 1
 done

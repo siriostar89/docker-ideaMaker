@@ -1,16 +1,22 @@
 FROM jlesage/baseimage-gui:ubuntu-18.04
-ARG DOCKER_IMAGE_VERSION=4.3.1
+ARG DOCKER_IMAGE_VERSION=unknown
 
-RUN apt-get update && apt-get install -y wget nano
+RUN apt-get update && apt-get install -y wget xfce4 libglu1-mesa libgomp1 sqlite3
 WORKDIR /tmp
 RUN wget --no-check-certificate https://download.raise3d.com/ideamaker/release/4.3.1/ideaMaker_4.3.1.6452-ubuntu_amd64.deb
 RUN apt install -y ./ideaMaker_4.3.1.6452-ubuntu_amd64.deb && apt-get autoremove --yes && apt-get clean
-RUN ln -s /usr/share/ideamaker /ideamaker
+RUN \
+    APP_ICON_URL=https://raw.githubusercontent.com/siriostar89/docker-ideaMaker/main/ideamaker.png && \
+    install_app_icon.sh "$APP_ICON_URL"
+RUN ln -s /config/.ideamaker /ideamaker
 
 COPY rootfs/ /
 
-VOLUME ["/ideamaker/profile"]
-VOLUME ["/ideamaker/config"]
+ENV APP_NAME="ideaMaker" \
+    KEEP_APP_RUNNING=0
+
+VOLUME ["/ideamaker"]
+VOLUME ["/user-data"]
 
 LABEL \
       org.label-schema.name="ideaMaker" \
